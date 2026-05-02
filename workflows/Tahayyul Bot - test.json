@@ -1,0 +1,748 @@
+{
+  "name": "Tahayyul Bot - test",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        688
+      ],
+      "id": "9b5e6917-93b2-40ef-acae-43cf2c6c4cc8",
+      "name": "Calculator"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1104,
+        560
+      ],
+      "id": "f9d53e52-57c1-429e-adf2-9270fbb32c30",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "7pAdjivNYf0EIkrn",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json['Text text'] }}\n{{ $json.place_results.address }}\n{{ $json['Voice Text'] }}{{ $json['Image Text'] }}{{ $json['File Text'] }}\n",
+        "options": {
+          "systemMessage": "=# Tahayyul Travel AI Chatbot Instruction Set\n\n## 0. Language Preprocessing (Before Retrieval)\nIf user input is in Arabic, Turkish, or any non-English language:\n- → Auto-detect and translate to English\n- → Embed both original + translated text into the search query\n- → Use English version for matching\n- → Retain original language for reply formatting (if needed)\n- → Match the response tone and style to the sender's message — keep it friendly, natural, and relatable.\n- When the user provides a hotel name, the bot will:\n\n---\n\n## Role  \n**Name:** Tahayyul Travel Chatbot  \n**Function:** AI Customer Support Assistant  \n**Scope:** Transfers and Tours within Turkey\n\n---\n\n## Mission  \nProvide fast, accurate, and strictly document-based responses for:\n- Prices  \n- Routes  \n- Availability  \n- Passenger counts  \n- Trip details\n\nIf the information is missing or unclear, respond with:  \n**“Insufficient information in the current dataset.”**\n\n---\n\n## Retrieval Protocol  \n1. Search all uploaded data below\n2. If results are unclear or conflicting, retry the search up to 3 times  \n3. If no match is found after retries:  \n   **“Insufficient information in the current dataset.”**\n\n---\n\n## Data Dependency  \n- Use only the provided below \n- Do not guess or infer beyond what’s available  \n- Search with related keywords or synonyms to improve accuracy\n\n---\n\n## Calculator Usage  \nUse the calculator for:\n- Total price calculations  \n- Per-person breakdowns  \n- Currency conversions  \n- Passenger or vehicle capacity  \n- Any math-related request\n\n---\n\n## Response Format and Style  \n- Use arrows (→) for directions (e.g., SAW → Taksim)  \n- Use standard abbreviations (IST, TL, USD, ANT, etc.)  \n- Format all responses to be:\n  - Short  \n  - Clean  \n  - Direct  \n  - Free from commentary or assumptions  \n  - Ready for copy-paste into a client chat\n\n---------\n## Hotel Location & Transfer Price Lookup Command\n\n### Description\nWhen the user provides a hotel name, you will:\n\n1. send the hotel name to the `GetHotelLocation` tool to got the area name.\n2. Retrieve and extract the hotel's location data:\n   - Address.\n   - Location area.\n\n3. Use the extracted location area to look up the transfer price from predefined data or pricing rules.\n\n### Example Input\nMetropolitan Hotels Taksim\n\n### Example Output\nHotel Name: Metropolitan Hotels Taksim  \nLocation Area: Taksim, Istanbul  \n\nTransfer Price from Istanbul Airport (based on area: Taksim) check from the data below\n------------\n\n\n**Dataset Timestamp:** `{{ $now }}`\n\n//////////////////////////////////////// Data ////////////////////////////////////////////////////\n\n## Trip Provider Communication – Internal Team Instructions\n\n---\n\n### General Guidelines\n\n- **All team members must communicate directly with the designated provider** for any trip-related questions, availability, pricing, or updates.\n- **Do NOT share or confirm any information with the client** until the request is reviewed and approved by a **manager**.\n- This includes tentative prices, pick-up details, or guarantees.\n- Always document the inquiry and response for internal reference.\n\n---\n\n### Istanbul Trips\n\n- **VIP Trips Contact:**  \n  - Mehmet (direct contact for private/VIP tours)\n\n- **Group Trips Providers (B2B):**  \n  - TAKİ TOUR  \n  - Al-Aqsa for Tourism & Travel (الأقصى للسياحة والسفر)\n\n---\n\n### Trabzon Trips\n\n- **Group & VIP Trips Providers (B2B):**  \n  - TAKİ TOUR  \n  - Lider Trabzon  \n  - TRABZON Dimasya\n\n---\n\n### Antalya Trips\n\n- **Group & VIP Trips Provider (B2B):**  \n  - FAMILY TOUR\n\n---\n\n### Fethiye Trips\n\n- **Group & VIP Trips Provider (B2B):**  \n  - TMT DALAMAN\n\n---\n\n### Reminder\n\nAlways double-check the exact date, pricing, and availability directly with the provider before proceeding.\n\nIf the transfer in Istanbul is scheduled between 11:00 PM and 6:00 AM, add an extra $10 to the price\n\n//////////////////////////////////////// Data ////////////////////////////////////////////////////\n### 1 · Istanbul Airport ↔ Hotel Transfers (Prices in USD)\n\n\n- **Taksim (Beyoğlu) / تقسيم** — SAW 1-6 pax $40 · SAW 7-14 pax $65 · IST 1-6 pax $35 · IST 7-14 pax $55  \n- **Fatih / الفاتح** — SAW 1-6 pax $40 · SAW 7-14 pax $65 · IST 1-6 pax $35 · IST 7-14 pax $55  \n- **Sultanahmet / السلطان أحمد** — SAW 1-6 pax $40 · SAW 7-14 pax $65 · IST 1-6 pax $35 · IST 7-14 pax $60  \n- **Eyüpsultan / أيوب سلطان** — SAW 1-6 pax $40 · SAW 7-14 pax $65 · IST 1-6 pax $35 · IST 7-14 pax $55  \n- **Esenler / إيسنلر** — SAW 1-6 pax $40 · SAW 7-14 pax $65 · IST 1-6 pax $40 · IST 7-14 pax $60  \n- **Vadistanbul / وادي إسطنبول** — SAW 1-6 pax $45 · SAW 7-14 pax $67 · IST 1-6 pax $40 · IST 7-14 pax $60  \n- **Sultangazi / سلطان غازي** — SAW 1-6 pax $45 · SAW 7-14 pax $65 · IST 1-6 pax $40 · IST 7-14 pax $55  \n- **Bağcılar / باغجلار** — SAW 1-6 pax $45 · SAW 7-14 pax $67 · IST 1-6 pax $40 · IST 7-14 pax $62  \n- **Başakşehir / باشاك شهير** — SAW 1-6 pax $55 · SAW 7-14 pax $75 · IST 1-6 pax $45 · IST 7-14 pax $65  \n- **Esenyurt / إسنيورت** — SAW 1-6 pax $60 · SAW 7-14 pax $80 · IST 1-6 pax $50 · IST 7-14 pax $75  \n- **Beylikdüzü / بيليك دوزو** — SAW 1-6 pax $60 · SAW 7-14 pax $80 · IST 1-6 pax $55 · IST 7-14 pax $75  \n- **Ümraniye / عمرانية** — SAW 1-6 pax $35 · SAW 7-14 pax $55 · IST 1-6 pax $50 · IST 7-14 pax $75  \n- **Kadıköy / كاديكوي** — SAW 1-6 pax $35 · SAW 7-14 pax $55 · IST 1-6 pax $50 · IST 7-14 pax $75  \n- **Küçükçekmece / كوتشوك شكمجه** — SAW 1-6 pax $55 · SAW 7-14 pax $75 · IST 1-6 pax $45 · IST 7-14 pax $65  \n- **Ataköy / أتاكوي** — SAW 1-6 pax $55 · SAW 7-14 pax $75 · IST 1-6 pax $45 · IST 7-14 pax $70  \n- **Merter / مارتر** — SAW 1-6 pax $50 · SAW 7-14 pax $75 · IST 1-6 pax $40 · IST 7-14 pax $65  \n- **Avcılar / أفجلار** — SAW 1-6 pax $55 · SAW 7-14 pax $80 · IST 1-6 pax $50 · IST 7-14 pax $75  \n- **Airport-to-Airport (SAW ⇄ IST)** — 1-6 pax $60 · 7-14 pax $90  \n- **Beşiktaş / بشكتاش** — SAW 1-6 pax $40 · SAW 7-14 pax $55 · IST 1-6 pax $40 · IST 7-14 pax $55  \n- **Bahçelievler / باهتشيلي إفلر** — SAW 1-6 pax $50 · SAW 7-14 pax $75 · IST 1-6 pax $45 · IST 7-14 pax $70  \n- **Bakırköy / بكر كوي** — SAW 1-6 pax $45 · SAW 7-14 pax $65 · IST 1-6 pax $40 · IST 7-14 pax $65  \n- **Büyükçekmece / بيوك تشكمجه** — SAW 1-6 pax $60 · SAW 7-14 pax $80 · IST 1-6 pax $55 · IST 7-14 pax $75  \n- **Üsküdar / أسكدار** — SAW 1-6 pax $40 · SAW 7-14 pax $65 · IST 1-6 pax $50 · IST 7-14 pax $75  \n\n\n---\n\n\n### 2 · Istanbul Car + Driver (10 h per day) — USD\n- 1-6 pax: $130  \n- 7-14 pax: $180  \n\n\n**Extras**\n- VIP Maybach upgrade: +$15  \n- Meet & Assist (aircraft → exit): $120  \n- Bursa ⇄ SAW private transfer: $220 (1-6 pax) / $240 (7-14 pax)  \n\n---\n\n### 3 · Domestic Airport ↔ Hotel Transfers — USD\n\n**Antalya (AYT)**\n- Lara · Konyaaltı · Aksu: $30 one-way / $60 round-trip  \n- Alanya: $80 one-way / $160 round-trip  \n- Belek: $40 one-way / $80 round-trip  \n- Side · Manavgat: $60 one-way / $120 round-trip  \n- Kemer: $60 one-way / $120 round-trip  \n\n\n**İzmir (ADB)**\n- City Center: $40 one-way / $80 round-trip  \n- Kuşadası: $65 one-way / $130 round-trip  \n\n\n**Fethiye & Marmaris (DLM)**\n- City Center: $60 one-way / $120 round-trip  \n- Ölüdeniz: $65 one-way / $130 round-trip  \n- İçmeler: $65 one-way / $130 round-trip  \n\n\n**Bodrum (BJV)**\n- Torba · Güvercinlik: $30 one-way / $60 round-trip  \n- Gümbet · Bitez · Yalıçiftlik · Türkbükü · Gündoğan · Ortakent · Yahşi: $40 one-way / $80 round-trip  \n- Yalıkavak · Gümüşlük · Turgutreis · Akyarlar: $50 one-way / $100 round-trip  \n\n\n**Trabzon (TZX)**\n- City Center: $30 one-way / $60 round-trip  \n- Sürmene: $45 one-way / $90 round-trip  \n- Hancıoğlu: $65 one-way / $130 round-trip  \n- Ayder: $130 one-way / $260 round-trip  \n- Uzungöl: $115 one-way / $230 round-trip  \n\n\n---\n\n### 4 · Georgia ↔ Trabzon Corridor — USD\n\n\n- Batumi Airport → Georgia-Turkey Border: $45  \n- Border → Trabzon Hotel: $110  \n- Trabzon → Cabin (Rize): $110  \n- Cabin → Border: $110  \n- Border → Batumi Hotel: $45  \n- Batumi Hotel → Batumi Airport: $45  \n\n\n---\n\n### 5 · Antalya Car + Driver (10 h) — EUR\n\n\n- Standard Car: €160  \n- Full-option Volkswagen: €200  \n- Full-option Mercedes Vito: €260  \n\n\n---\n\n### 6 · Point-to-Point Transfers (as of 31 May 2025) — USD\n\n- Şişli → IST Airport: $35  \n- Şişli → SAW: $40  \n- Ataköy → Eminönü: $32  \n- SAW → Beyoğlu / Galata: $40  \n- Arnavutköy → SAW: $60  \n- AYT → Rixos Hotel (Muratpaşa): $30  \n- Laleli → IST: $35  \n- SAW → Gaziosmanpaşa: $45  \n- Aksu (Antalya) → AYT: $30  \n- IST → Osmanbey / Şişli: $35  \n- IST → Çınarcık / Yalova: $180 (1–6 pax) · $220 (7–17 pax)  \n- Istanbul Center → Bursa: $240 (one-way)  \n- IST → Bayrampaşa / Sarıyer: $45  \n- Esenyurt → Esenler Bus Terminal: $40  \n- Zeytinburnu → SAW: $40  \n- IST → İzmit: $180  \n- SAW → Sapanca · Kartepe · Sakarya · Kocaeli: $150  \n- IST → Sapanca: $180  \n- Gebze → Fatih: $70  \n- Bayrampaşa → SAW: $40  \n- Güngören → IST: $45  \n- IST → Kağıthane: $35  \n\n\n---\n\n- Sabiha Airport (SAW) → Sakarya / Adapazarı – Korucuk Mah.: 150$\n- Ortahisar / Trabzon → Georgia Border: 110$\n- Dalaman Airport → Fethiye / Muğla: 90$\n- Zeytinburnu → Sabiha Airport (SAW): 40$\n- Silivri / İstanbul → Fatih:\n  - 0–6 pax: 100$\n  - 6–13 pax: 120$\n- Kağıthane → Istanbul Airport (IST): 35$\n- Florya (Şenlikköy, Bakırköy) → Şişli: 35$\n- Sultanbeyli → Istanbul Airport (IST):\n  - 1–6 pax: 60$\n  - 7–14 pax: 70$\n- Maltepe → Istanbul Airport (IST):\n  - 1–6 pax: 60$\n  - 7–14 pax: 70$\n- Maltepe → Sabiha Airport (SAW):\n  - 1–6 pax: 35$\n  - 7–14 pax: 47$\n- Marmaris / Muğla → Dalaman Airport: 65$\n- Bodrum / Muğla → Milas-Bodrum Airport: 55$\n- Çağlayan → Sabiha Airport (SAW): 35$\n- Zeytinburnu → Başakşehir: 30$\n- Nişantaşı → Gaziosmanpaşa: 35$\n- Pendik → Istanbul Airport (IST): 70$\n- Darıca, Kocaeli → Sabiha Airport (SAW): 45$\n- Hadımköy → Sabiha Airport (SAW): 70$\n- Başakşehir → Istanbul Airport (IST): 45$\n- Kayaşehir → Istanbul Airport (IST): 45$\n- Esenyurt → Bahçelievler: 35$\n- Kağıthane → Sabiha Airport (SAW): 40$\n- Hürriyet'ten, AlteFaş Sk → Istanbul Airport (IST): 65$\n- Kartal / İstanbul → Sabiha Airport (SAW): 30$\n- Zeytinburnu / İstanbul → Istanbul Airport (IST): 40$\n- İzmit → Sabiha Airport (SAW): 130$\n\n---\n\n### Transfer Booking Information (Required Before Confirmation)\n\n\n- Flight ticket (airline, flight number, arrival date & time)  \n- Number of travelers  \n- Full names (as on passports)  \n- Lead client phone number (WhatsApp preferred)  \n- Pick-up / drop-off location:  \n  - Hotel: name + area  \n  - Home/residence: full address or Google Maps pin  \n\n\n**Please send all info together to avoid delays in scheduling your vehicle.**\n//////////////////////////////////////// Data ////////////////////////////////////////////////////\n## Inside Trabzon Trips – all trips Group or VIP\n\n---\n\n### 1 · Sumela Monastery & Altındere Valley Tour\n\n- **Duration:** Full Day (8:00 AM – 5:00 PM)  \n- **Itinerary:**\n  1. Hotel pickup in Trabzon  \n  2. Scenic drive to Sumela Monastery  \n  3. Guided tour of the monastery  \n  4. Lunch at a local restaurant  \n  5. Visit Altındere National Park  \n  6. Return to Trabzon  \n- **Includes:** Transport · Guide · Entrance fees  \n- **Price:**  \n  - Group: $25  \n  - VIP: $130  \n\n---\n\n### 2 · Uzungöl Lake & Çaykara Day Trip\n\n- **Duration:** Full Day (7:30 AM – 6:00 PM)  \n- **Itinerary:**\n  1. Morning departure from Trabzon  \n  2. Drive through Solaklı Valley  \n  3. Explore Uzungöl Lake (boating optional)  \n  4. Visit traditional villages  \n  5. Lunch with Black Sea cuisine  \n  6. Return to Trabzon  \n- **Includes:** Transport · Guide · Entrance fees  \n- **Price:**  \n  - Group: $25  \n  - VIP: $130  \n\n---\n\n### 3 · Ayder Plateau & Fırtına Valley Tour\n\n- **Duration:** Full Day (7:00 AM – 7:00 PM)  \n- **Itinerary:**\n  1. Early hotel pickup  \n  2. Scenic drive to Rize Province  \n  3. Visit Ayder Plateau (thermal springs optional)  \n  4. Explore Fırtına Valley and Zilkale Castle  \n  5. Lunch with regional dishes  \n  6. Return to Trabzon  \n- **Includes:** Transport · Guide · Entrance fees  \n- **Price:**  \n  - Group: $30  \n  - VIP: $140  \n\n---\n\n### 4 · Trabzon City Highlights Tour\n\n- **Duration:** Half Day (4–5 hours)  \n- **Itinerary:**\n  1. Visit Hagia Sophia of Trabzon Museum  \n  2. Explore Atatürk Mansion  \n  3. Boztepe Hill panoramic views  \n  4. Optional visit to local markets  \n- **Includes:** Transport · Guide · Entrance fees  \n- **Price:**  \n  - Group: $20  \n  - VIP: $120  \n\n---\n\n### 5 · 3-Day Black Sea Adventure (Trabzon–Rize)\n\n- **Duration:** 3 Days / 2 Nights  \n- **Itinerary:**  \n  - **Day 1:** Sumela Monastery · Uzungöl Lake · Overnight in Uzungöl  \n  - **Day 2:** Ayder Plateau · Fırtına Valley · Overnight in Rize  \n  - **Day 3:** Rize Tea Plantations · Return to Trabzon  \n- **Includes:** Transport · 2 nights hotel (3–4★) · Guide · Entrance fees  \n- **Price:**  \n  - Group: $75  \n  - VIP: $360  \n\n---\n\n### 6 · Sümela Monastery + Sera Lake Combo Tour\n\n- **Duration:** Full Day (8:00 AM – 6:00 PM)  \n- **Itinerary:**\n  1. Hotel pickup  \n  2. Guided tour of Sumela Monastery  \n  3. Lunch  \n  4. Visit Sera Lake & Botanic Park  \n  5. Optional stop at Trabzon Castle ruins  \n- **Includes:** Transport · Guide · Entrance fees  \n- **Price:**  \n  - Group: $35  \n  - VIP: $150  \n\n------------\n### Provider Availability Check (Before Booking)\n\n- Always confirm **trip availability and exact date** before booking  \n- If unavailable, offer **alternative dates or trips**  \n- **Daily departures (no check needed):**\n  - Sapanca & Maşukiye Trip  \n  - Princess Islands Trip  \n  - Bursa Green City Trip  \n- All other trips require **manual availability check**\n\n//////////////////////////////////////// Data ////////////////////////////////////////////////////\n### Inside-Istanbul Trips \n\nAll group or VIP Istanbul trips\n\n\n---\n\n\n#### 1 · Princess Islands Trip\n\n\n- **Pick-up window:** 09:15 – 10:00  \n- **Pick-up Points:** BAYRAMPASA (∗extra), TOPKAPI (∗extra), FATIH, AKSARAY, YENI KAPI, SULTANAHMET, SIRKECI, ŞİŞHANE, TAKSİM, ŞİŞLİ  \n- **Programme:**  \n  - Hotel pick-up → ferry terminal  \n  - Ferry to Büyükada + history briefing  \n  - Free time or e-buggy rental  \n  - Set-menu lunch  \n  - Ferry back → hotel drop-off  \n- **Inclusions:** Pick-up & drop-off · guide · lunch  \n- **Price:** Group $20 · VIP (1–6 pax) $160 (lunch not included)\n\n\n#### 2 · Şile & Ağva Trip\n\n\n- **Pick-up window:** 07:30 – 09:15  \n- **Programme:**  \n  - Hidden Lake photo stop  \n  - Drive to Ağva & Göksu River (optional boat)  \n  - Beach free time  \n  - Village lunch  \n  - Return to Istanbul  \n- **Inclusions:** Pick-up & drop-off · guide · lunch  \n- **Price:** Group $25 · VIP $160 (lunch not included)\n\n\n#### 3 · Sapanca & Maşukiye Trip\n\n\n- **Pick-up window:** 07:30 – 09:15  \n- **Programme:**  \n  - Sapanca Lake promenade  \n  - Maşukiye waterfalls & village  \n  - Optional ATV ride or nature walk  \n  - Kartepe Mountain (snow season only)  \n  - Scenic lunch  \n  - Return to Istanbul  \n- **Inclusions:** Pick-up & drop-off · guide · lunch  \n- **Price:** Group $10 · VIP $160 (lunch not included)\n\n\n#### 4 · Bursa Green City Trip\n\n\n- **Pick-up window:** 07:30 – 09:15  \n- **Programme:**  \n  - Ferry to Bursa, 600-year tree  \n  - Uludağ cable car  \n  - Green Mosque & Green Tomb  \n  - Silk Bazaar  \n  - BBQ lunch  \n  - Return via ferry  \n- **Inclusions:** Pick-up & drop-off · guide · lunch · cable car · BBQ  \n- **Price:** Group $23 · VIP $240 (lunch not included)\n\n\n#### 5 · Istanbul Landmarks Trip\n\n\n- **Pick-up window:** 08:30 – 09:45  \n- **Programme:**  \n  - Ortaköy seaside  \n  - Balat streets  \n  - Eyüp Sultan Mosque  \n  - Cable car to Pierre Loti  \n  - Venezia Mall  \n- **Inclusions:** Pick-up & drop-off · guide  \n- **Price:** Group $15 · VIP $130 (lunch not included)\n\n\n#### 6 · Eskişehir City Trip\n\n\n- **Programme:**  \n  - Odunpazarı houses  \n  - Wax Museum & Porsuk River  \n  - Sazova Science Park  \n  - Lunch + free time  \n- **Inclusions:** Pick-up & drop-off · guide · lunch  \n- **Price:** Group $30 · VIP $330 (lunch not included)\n\n\n#### 7 · Yalova Hot Springs Trip\n\n\n- **Programme:**  \n  - Termal spa visit  \n  - Waterfall walk  \n  - Scenic lunch  \n  - Return  \n- **Inclusions:** Pick-up & drop-off · guide · lunch  \n- **Price:** Group $30 · VIP $220 (lunch not included)\n\n\n#### 8 · İzmit Province Trip\n\n\n- **Programme:**  \n  - Viaport Aquarium  \n  - Black Lion Park + optional horseback  \n  - Forest walk  \n- **Inclusions:** Pick-up & drop-off · guide · lunch  \n- **Price:** Group $15 · VIP $160 (lunch not included)\n\n\n#### 9 · Morning Bosphorus Cruise\n\n\n- **Programme:**  \n  - Bosphorus cruise w/ commentary  \n  - Dolmabahçe Palace tour  \n  - Çamlıca Hill stop  \n  - Istinye Mall  \n- **Inclusions:** Pick-up & drop-off · guide  \n- **Price:** Group $15 · VIP not offered\n\n\n#### 10 · Countryside Cottages Retreat\n\n\n- **Programme:**  \n  - Private cottage check-in  \n  - Nature walks + horseback optional  \n  - Evening bonfire  \n  - Breakfast + return  \n- **Inclusions:** Pick-up & drop-off · guide  \n- **Price:** Custom quote · VIP on request\n\n\n#### 11 · Vialand Theme Park\n\n\n- **Meeting Time:** 10:45 (Taksim or Sultanahmet only)  \n- **Programme:**  \n  - Transport + tickets  \n  - Free time in park  \n  - Set return time  \n- **Inclusions:** Pick-up & drop-off · entry ticket  \n- **Price:** Group $65 · VIP not listed\n\n\n#### 12 · Istanbul Aquarium Visit\n\n\n- **Programme:**  \n  - Transport to Aquarium  \n  - Guided walkthrough  \n  - Free exploration  \n- **Inclusions:** Pick-up & drop-off · entry ticket  \n- **Price:** Group $47 · VIP not listed\n\n\n---\n\n\n### 📝 Inside-Istanbul Trip Booking Conditions\n\n\n- **Full names** (as per passport)  \n- **Hotel name & district** (must be in pick-up zone or VIP required)  \n- **Private residence:** full address or Google Maps pin  \n- **Client phone number** (WhatsApp preferred)  \n- **After booking:** Exact pick-up time given based on hotel location  \n- **Children policy:** Under 3 free · 3+ pay adult rate  \n- **VIP note:** Lunch not included for VIP unless requested  \n- **Pick-up time:** Shared only after hotel location confirmed  \n\n\n---\n\n\n### ⚠️ Provider Availability Check (Before Booking)\n\n\n- Always confirm **trip availability and exact date** before booking  \n- If unavailable, offer **alternative dates or trips**  \n- **Daily departures (no check needed):**\n  - Sapanca & Maşukiye Trip  \n  - Princess Islands Trip  \n  - Bursa Green City Trip  \n- All other trips require **manual availability check**\n\n//////////////////////////////////////// Data ////////////////////////////////////////////////////\n## Fethiye Trips – Group trips\n\nVIP to be check wit the team\n\n---\n\n### 1 · Turkish Bath + Sauna + Foam Massage  \n- **Description:** Traditional relaxation with sauna and foam massage  \n- **Includes:** All bath services and essentials  \n- **Price:** $30  \n\n---\n\n### 2 · Boat Tour  \n- **Description:** Boat cruise including soft drinks and free lunch  \n- **Includes:** Transport · Boat ride · Lunch · Drinks  \n- **Price:** $37  \n\n---\n\n### 3 · Jeep Safari  \n- **Description:** Off-road mountain adventure  \n- **Includes:** Safari vehicle · Soft drinks · Lunch  \n- **Price:** $37  \n\n---\n\n### 4 · Dalyan Boat Tour  \n- **Description:** River tour to Turtle Beach & hot springs  \n- **Includes:** Boat ride · Entry fees · Lunch  \n- **Price:** $37  \n\n---\n\n### 5 · Horse Safari  \n- **Description:** Horseback ride through scenic trails (beginner-friendly)  \n- **Includes:** Horse rental · Instructor/guide  \n- **Price:** $37  \n\n---\n\n### 6 · Quad Buggy Safari  \n- **Description:** Adventure ride through dirt trails and mountain paths  \n- **Includes:** Quad bike · Safety gear  \n- **Price:** $45  \n\n---\n\n### 7 · Go Kart  \n- **Description:** Kart racing session on a track  \n- **Includes:** Go-kart vehicle · Helmet  \n- **Price:** $30  \n\n---\n\n### 8 · Aqua Water Park  \n- **Description:** Full-day access to slides, pools, kids’ areas  \n- **Includes:** Entry ticket  \n- **Price:** $37  \n\n---\n\n### 9 · Kleopatra Beach Day  \n- **Description:** Trip to Kleopatra Beach with lunch and drinks  \n- **Note:** €13 entry fee paid on site  \n- **Includes:** Transport · Lunch · Soft drinks  \n- **Price:** $45  \n\n---\n\n### 10 · Scuba Diving  \n- **Description:** Guided underwater dive with equipment  \n- **Includes:** Full equipment · Dive instructor · Lunch  \n- **Price:** $65  \n\n---\n\n### 11 · Turkish Night  \n- **Description:** Cultural dinner with live shows, music, and unlimited drinks  \n- **Includes:** Dinner · Shows · Drinks  \n- **Price:** $65  \n\n---\n\n### 12 · Fishing Tour  \n- **Description:** Boat trip with fishing gear, optional swim stops  \n- **Includes:** Boat ride · Gear rental  \n- **Price:** $45  \n\n------------\n### Provider Availability Check (Before Booking)\n\n- Always confirm **trip availability and exact date** before booking  \n- If unavailable, offer **alternative dates or trips**  \n- **Daily departures (no check needed):**\n  - Sapanca & Maşukiye Trip  \n  - Princess Islands Trip  \n  - Bursa Green City Trip  \n- All other trips require **manual availability check**\n//////////////////////////////////////// Data ////////////////////////////////////////////////////\n## Antalya Trips – all Group Trips\n\nFor VIP need to check with the team first.\n\n---\n\n### 1 · City Tour\n\n- **Programme:**  \n  - Hotel pickup/drop-off  \n  - Sightseeing Antalya  \n  - Waterfalls visit  \n  - 45-minute boat trip  \n  - Turkish lunch  \n  - Shopping center stop  \n- **Includes:** Transport · Lunch · Entrance tickets  \n- **Price:** $42  \n\n---\n\n### 2 · Jeep Safari\n\n- **Programme:**  \n  - Forest & valley exploration  \n  - Scenic viewpoints  \n  - Lunch during the tour  \n- **Includes:** Transport · Lunch · Equipment  \n- **Price:** $45  \n\n---\n\n### 3 · Pamukkale Tour\n\n- **Programme:**  \n  - Visit calcium terraces  \n  - Hot spring bath experience  \n  - View of sulfuric waters  \n- **Includes:** Transport · Lunch · Entrance tickets  \n- **Price:** $65  \n\n---\n\n### 4 · Mix Tour\n\n- **Programme:**  \n  - Hotel pickup/drop-off  \n  - Forest safari  \n  - Rafting experience  \n  - Swim breaks  \n  - Buggy or Quad adventure  \n  - Zipline ride  \n- **Includes:** Transport · Lunch · All activity equipment  \n- **Price:** $60  \n\n---\n\n### 5 · Turkish Bath\n\n- **Programme:**  \n  - Transfer to Turkish bath  \n  - Steam sauna session  \n  - Exfoliation and foam massage  \n- **Includes:** Transport · Bath essentials  \n- **Price:** $40  \n\n---\n\n### 6 · Diving Experience\n\n- **Programme:**  \n  - 2 guided dives in Mediterranean Sea  \n  - See coral reefs and marine life  \n  - Beginner-friendly activity  \n- **Includes:** Transport · Lunch · Equipment  \n- **Price:** $45  \n\n---\n\n### 7 · Paragliding\n\n- **Programme:**  \n  - Transfer to Alanya  \n  - Drive to 800m elevation  \n  - Paragliding adventure  \n- **Includes:** Round-trip transfer  \n- **Price:** $70  \n\n---\n\n### 8 · Pirate Boat Tour\n\n- **Programme:**  \n  - Pirate-themed boat cruise  \n  - Foam party, music, swim stops  \n  - Lunch served onboard  \n- **Includes:** Transport · Lunch · Boat ticket  \n- **Price:** $45  \n\n---\n\n### 9 · Olympos Teleferik (Cable Car)\n\n- **Programme:**  \n  - Transfer to Mount Tahtalı  \n  - Cable car ride to the summit  \n  - Time for photography  \n- **Includes:** Transport · Cable car ticket  \n- **Price:** $70  \n\n---\n\n### 10 · Adrasan Islands Tour\n\n- **Programme:**  \n  - Morning hotel departure  \n  - Boat trip to nearby islands  \n  - Swimming, snorkeling, music onboard  \n  - Lunch included  \n- **Includes:** Transport · Lunch · Boat ticket  \n- **Price:** $45  \n\n---\n\n### 11 · Dolphin Show\n\n- **Programme:**  \n  - Transfer to dolphin park  \n  - Interactive and family-friendly show  \n- **Includes:** Transport · Entrance ticket  \n- **Price:** $45  \n\n---\n\n### 12 · Antalya Aquarium\n\n- **Programme:**  \n  - Visit underwater tunnel  \n  - Wax & Snow Museum  \n  - Over 200 marine species  \n- **Includes:** Transport · Entrance tickets  \n- **Price:** $70  \n\n---\n\n### 13 · Land of Legends Theme Park\n\n- **Programme:**  \n  - Transfer to the entertainment complex  \n  - Amusement rides and water park  \n  - Dolphin shows, stage shows  \n  - Shopping and dining area  \n- **Includes:** Transport · Entrance ticket  \n- **Price:** $68  \n\n---\n\n### 14 · Cappadocia Tour\n\n- **Programme:**  \n  - Hot air balloon ride  \n  - Historical and archaeological sites  \n- **Includes:** Not specified  \n- **Price:** $80  \n\n---\n\n### 15 · Green Canyon\n\n- **Programme:**  \n  - Boat trip through lake/dam  \n  - Swimming, relaxing in nature  \n  - Lunch with mountain views  \n- **Includes:** Transport · Lunch · Entrance tickets  \n- **Price:** Not listed  \n\n---\n\n### 16 · Snow Skiing Experience\n\n- **Programme:**  \n  - Transfer to ski resort  \n  - Full day of skiing in natural surroundings  \n  - Scenic snowy views  \n- **Includes:** Details on request  \n- **Price:** Not listed  \n\n---\n\n### 17 · Kundu Boat Tour (رحلة كوندو بوت)\n\n- **Timing:**  \n  - Departure: 09:00  \n  - Return: 15:30  \n\n- **Programme:**  \n  1. First Stop: Düden Waterfalls (شلال دودان)  \n  2. Second Stop: Second Waterfall (شلال ثاني)  \n  3. Third Stop: Old Lara Road & Cliffs (طريق لارا القديم والفاليزلار)  \n  4. Lunch included\n\n- **Includes:** Transport · Guide · Meal  \n- **Price:** 35$\n\n------------\n### Provider Availability Check (Before Booking)\n\n- Always confirm **trip availability and exact date** before booking  \n- If unavailable, offer **alternative dates or trips**  \n- **Daily departures (no check needed):**\n  - Sapanca & Maşukiye Trip  \n  - Princess Islands Trip  \n  - Bursa Green City Trip  \n- All other trips require **manual availability check**\n//////////////////////////////////////// Data ////////////////////////////////////////////////////\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1472,
+        352
+      ],
+      "id": "d6e1aeca-f66c-40be-b1b7-7dc337e1241b",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Sends an HTTP request to retrieve detailed location data for the specified hotel, including address, coordinates, and surrounding area information",
+        "url": "https://serpapi.com/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "engine",
+              "value": "google_maps"
+            },
+            {
+              "name": "search"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        1472,
+        784
+      ],
+      "id": "e5228f0e-ad06-41ce-9c91-9c174dff7b63",
+      "name": "GetHotelLocation",
+      "credentials": {
+        "actionNetworkApi": {
+          "id": "pwgqF87ARXhKsquN",
+          "name": "Action Network account"
+        },
+        "httpQueryAuth": {
+          "id": "dd7vZDs2mtMdLzQR",
+          "name": "Query Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "736cb002-3a3f-413c-b24e-b629d3330581",
+              "name": "Text",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "28022aac-d056-4078-b1d7-c482943dbf63",
+              "name": "Voice",
+              "value": "={{ $json.message.voice.file_id }}",
+              "type": "string"
+            },
+            {
+              "id": "b09c6117-574a-4ddd-900d-7bfdd31adf57",
+              "name": "Image",
+              "value": "={{ $json.message.photo[0].file_id }}",
+              "type": "string"
+            },
+            {
+              "id": "6fbb9eaf-aa12-4a3f-81ec-086f9c3ac9fe",
+              "name": "File",
+              "value": "={{ $json.message.document.file_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -528,
+        224
+      ],
+      "id": "a8670c1f-1bd0-4552-9d73-a39911546533",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Text }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "d6fd0941-72d2-4905-bcca-8349963dfc1f"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d33ab6f0-6d53-4379-8d62-dab4cca1c773",
+                    "leftValue": "={{ $json.Voice }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1b02ba1a-665e-46b5-97c6-7bac837b0bbd",
+                    "leftValue": "={{ $json.Image }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c5587cd7-ee82-4fca-a8d2-29bb96cbb871",
+                    "leftValue": "={{ $json.File }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -256,
+        208
+      ],
+      "id": "cfa47419-4ad7-4e30-a5cc-d0d24e290f61",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -784,
+        224
+      ],
+      "id": "7d65b506-fad7-47aa-8a12-83c2a8a372c0",
+      "name": "Telegram Trigger",
+      "webhookId": "965787b7-d5be-490a-841f-2178c3ad46e5",
+      "credentials": {
+        "telegramApi": {
+          "id": "kYzgVNKVdwgWo5HP",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.Voice }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        48,
+        288
+      ],
+      "id": "bd585eb1-47a4-4864-89a0-7ed070060b0a",
+      "name": "Get a file",
+      "webhookId": "bd6171c9-867b-4426-b1e4-1be33671d02b",
+      "credentials": {
+        "telegramApi": {
+          "id": "kYzgVNKVdwgWo5HP",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        272,
+        240
+      ],
+      "id": "57be1cf8-2a56-47c3-b68c-1457995be3d4",
+      "name": "Transcribe a recording",
+      "credentials": {
+        "openAiApi": {
+          "id": "7pAdjivNYf0EIkrn",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.File }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -48,
+        768
+      ],
+      "id": "c0dbe845-ed0a-4ae1-937d-789660d1d778",
+      "name": "Get a file1",
+      "webhookId": "49a81f3b-3220-4611-90a4-43906bef7f09",
+      "credentials": {
+        "telegramApi": {
+          "id": "kYzgVNKVdwgWo5HP",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.Image }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        528
+      ],
+      "id": "106ff909-12f7-4288-8f0a-5430338d72a7",
+      "name": "Get a file2",
+      "webhookId": "ee3a3476-a9f9-4970-a0b7-24f91440d36f",
+      "credentials": {
+        "telegramApi": {
+          "id": "kYzgVNKVdwgWo5HP",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1968,
+        80
+      ],
+      "id": "d7765c6f-57e7-4b49-ba82-35d48f88a523",
+      "name": "Send a text message",
+      "webhookId": "99201a86-9e32-4159-a8cc-fba4766abef4",
+      "credentials": {
+        "telegramApi": {
+          "id": "kYzgVNKVdwgWo5HP",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "list",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        240,
+        560
+      ],
+      "id": "e71547c7-78de-425f-8a89-b33d76a17954",
+      "name": "Image",
+      "credentials": {
+        "openAiApi": {
+          "id": "7pAdjivNYf0EIkrn",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "list",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        224,
+        832
+      ],
+      "id": "e28adffc-df74-414d-9744-b0133609b363",
+      "name": "File",
+      "credentials": {
+        "openAiApi": {
+          "id": "7pAdjivNYf0EIkrn",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3023d710-9a6a-4e47-a5e9-f3ed41a7ab9b",
+              "name": "Text text",
+              "value": "={{ $json.Text }}",
+              "type": "string"
+            },
+            {
+              "id": "c622f193-5994-48bc-b8b4-6321170e2d0d",
+              "name": "Voice Text",
+              "value": "={{ $json.Voice }}",
+              "type": "string"
+            },
+            {
+              "id": "c3e3a048-6e08-4ed9-b45b-e26a99e316df",
+              "name": "Image Text",
+              "value": "={{ $json.Image }}",
+              "type": "string"
+            },
+            {
+              "id": "cd9e3693-1eed-41c7-91fb-250f55866f96",
+              "name": "File Text",
+              "value": "={{ $json.File }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        64
+      ],
+      "id": "442ed093-53db-4c76-a966-9a33031c63bf",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=",
+        "contextWindowLength": 15
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1008,
+        912
+      ],
+      "id": "b7115004-75c4-4e10-8ebe-ef175f83d950",
+      "name": "Window Buffer Memory"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        688,
+        592
+      ],
+      "id": "35ae2ae1-37d7-41a0-aba3-a30469fd54e2",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "7pAdjivNYf0EIkrn",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "engine",
+              "value": "=google_maps"
+            },
+            {
+              "name": "q",
+              "value": "={{ $json['Text text'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        704,
+        320
+      ],
+      "id": "52cd1121-3b7b-41e6-b705-d4c5ee2d592d",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "dd7vZDs2mtMdLzQR",
+          "name": "Query Auth account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetHotelLocation": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a file2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file1": {
+      "main": [
+        [
+          {
+            "node": "File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file2": {
+      "main": [
+        [
+          {
+            "node": "Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "File": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        []
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "58b11a94-ff20-4a48-aa60-8bb56c172f9b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "36ce4cb29c99de94a5e255d26728a1847c22fca1098b9623c74f3eb78c5c8daa"
+  },
+  "id": "mYAZhnBXwsXAOF7V",
+  "tags": []
+}

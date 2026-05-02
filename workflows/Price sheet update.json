@@ -1,0 +1,175 @@
+{
+  "name": "Price sheet update",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Prices Updates Requests",
+        "formDescription": "Here is to update the prices sheet in the file to collect all the prices for you reference. ",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "You Name ",
+              "placeholder": "Enter your name ",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "From",
+              "placeholder": "From",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "To",
+              "placeholder": "To",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Price",
+              "placeholder": "Enter the price",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e70b31a0-7a66-49d2-aabd-232da13a4a34",
+      "name": "On form submission",
+      "webhookId": "82d43099-3d96-4f56-989a-2b3a6e2ed87e"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appcCqWOS8A1RZVm7",
+          "mode": "list",
+          "cachedResultName": "Prices Update",
+          "cachedResultUrl": "https://airtable.com/appcCqWOS8A1RZVm7"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblvrMLESavNmb4kN",
+          "mode": "list",
+          "cachedResultName": "CS_Updates",
+          "cachedResultUrl": "https://airtable.com/appcCqWOS8A1RZVm7/tblvrMLESavNmb4kN"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "CS_Name": "={{ $json['You Name '] }}",
+            "Number": "={{ $json.Price }}",
+            "From": "={{ $json.From }}",
+            "To": "={{ $json.To }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "CS_Name",
+              "displayName": "CS_Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "From",
+              "displayName": "From",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "To",
+              "displayName": "To",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Number",
+              "displayName": "Number",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        384,
+        -128
+      ],
+      "id": "a64016ad-392e-4e4f-a5c9-cbb88398fdf6",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Cu5bPNSkSDYFUCPP",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "de5d520c-b533-4aea-8899-a75777fa34d1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "36ce4cb29c99de94a5e255d26728a1847c22fca1098b9623c74f3eb78c5c8daa"
+  },
+  "id": "IMeMhrVFJJA9Be5W",
+  "tags": []
+}

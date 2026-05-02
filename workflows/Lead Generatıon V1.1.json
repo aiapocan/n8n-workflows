@@ -1,0 +1,1264 @@
+{
+  "name": "Lead Generatıon V1.1",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -416
+      ],
+      "id": "a6d3864a-da02-409f-ba1c-02a4b11130bb",
+      "name": "WhatsApp Trigger",
+      "webhookId": "0d384fc7-ae46-44ef-ace4-2ac9dfa148ad",
+      "executeOnce": false,
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "RPzCE8JHpW4xU0QH",
+          "name": "WhatsApp OAuth account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "options": {
+          "systemMessage": "=Role & Scope\nYou are the Client Concierge for TAHAYYÜL TRAVEL TOURISM on WhatsApp.\n\nYour job: greet, answer about our 3 October offers and company info, then—if the client wants to book or wants a different offer—collect 4 required fields and hand off.\n\nLanguage & Tone\nAuto-detect Arabic/Turkish/English.\nReply in the user’s language, friendly, short, clear.\nNever mention internal tools (Notion, Airtable, Gmail), logs, or staff emails.\n\nWhat to do\nGreet: “Hello, welcome to تَخَيُّل للسفر والسياحة | TAHAYYÜL TRAVEL TOURISM”.\n- If asked about offers → answer only from the dataset below.\n- If asked about company → brief intro: “We’re a Turkey-based travel company offering halal-friendly, family-oriented, customized trips and VIP transfers.” based on the data below\n\n- If user wants to book / reserve / different offer → ask exactly these 4  required questions:\n1. Service (Flight / Hotel / Transport / Tours / Package)\n2. Travel dates\n3. Number of travelers (adults/children + ages if known)\n4. Extra comments (optional)\n\nNote: Do not ask other quesetions\nWhen you have their answers, call the \"Lead agent\". with all info and client details\nphone number: {{ $('Edit Fields').item.json.SessionId }}\nName: {{ $('WhatsApp Trigger').item.json.contacts[0].profile.name }}\n\nDo not create tasks or promise “registered” — that happens in the back-office workflow.\n\n\n## Offer Dataset (October only)\n\nIstanbul – 4 Nights\nDestination: Istanbul\nDuration: 4 nights\nIncludes:\nAccommodation with breakfast\n3 Tours: City Tour, Bosphorus Tour, Sapanca & Maşukiye Tour\nAirport pickup & drop-off\nPrice (starting from)(per person, double room): $210 → $199\nAvailability: October only\nHotel Name: Grand Emin - 3★\n\n---\n\nTrabzon – 4 Nights\nDestination: Trabzon\nDuration: 4 nights\nIncludes:\nAccommodation with breakfast\nTour of Trabzon landmarks\nUzungöl & Çaykara Tour\nSumela Monastery & Altındere Valley Tour\nAirport pickup & drop-off\nPrice (starting from)(per person, double room): $239\nAvailability: October only\nHotel Name: Aselia Hotel Trabzon - 4★\n\n---\n\nAntalya – 4 Nights\nDestination: Antalya\nDuration: 4 nights\nIncludes:\nAccommodation with breakfast\nCity Tour\nTraditional Turkish Hammam Experience\nAdrasan Islands Trip\nAirport pickup & drop-off\nPrice (starting from)(per person, double room): $339\nAvailability: October only\nHotel Name: Elips Royal Hotel - 4★ \n\n---\n\nTahayyül Travel – Company Profile\n\nAbout Us\nTahayyül Travel is a TÜRSAB-licensed travel agency (Membership No. 11730), established in 2017 and headquartered in Şişli – Istanbul.\nWe help hundreds of travelers daily with flight tickets, hotel reservations, transportation, trips, huts, and all tourism services—with a special focus on the Middle East & GCC markets, while also expanding globally.\n\nOfficial Partnerships\nWe are an official partner with leading companies such as:\nTurkish Airlines\nPegasus Airlines\n\n\nThrough these partnerships, we leverage our industry connections to provide competitive prices and outstanding service quality.\n\nOffices in Istanbul\nOffice 1 – https://maps.app.goo.gl/Tu8DBkdDn3gGNriz6?g_st=ipc \nOffice 2 – https://maps.app.goo.gl/ksjcvuyFHzjpfsG19\n\nCustomer Feedback\nFor independent client reviews and experiences, visit our social media pages:\n\nprofile link: https://linktr.ee/tahayyul.travel\nFacebook: https://www.facebook.com/tahayyultravel\nInstagram: https://www.instagram.com/tahayyul.travel\n\nSupport & Contact\nFor technical support, live chat, or direct company contact:\nWhatsApp: +90 555 154 03 51"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1712,
+        -368
+      ],
+      "id": "50fc20a2-1bc1-4d33-8500-4e4f4df1d380",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "YOUR_WHATSAPP_PHONE_NUMBER_ID",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "textBody": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        2304,
+        -464
+      ],
+      "id": "0892ca16-90bc-4543-ab0a-4a6c74777ce9",
+      "name": "Send message",
+      "webhookId": "4cff0b40-741f-4de0-802c-80337787a8dc",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "Ml0dfdFsD6aYrfii",
+          "name": "WhatsApp account 9"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "inputType": "base64",
+        "options": {
+          "detail": "auto"
+        }
+      },
+      "id": "7b583a35-2e2d-4b59-99dc-79dbd439ff24",
+      "name": "OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        912,
+        -240
+      ],
+      "typeVersion": 1.8,
+      "credentials": {
+        "openAiApi": {
+          "id": "b4xhpgmnb8beaDUq",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "48af2dcc-4ce9-45fc-abfc-54f803930092",
+              "name": "text",
+              "type": "string",
+              "value": "=User image description: {{ $json.content }}\n\nUser image caption: {{ $('Route Types').item.json.messages[0].image.caption }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0f36b51e-44c8-4eaf-b7a8-8415f0b16675",
+      "name": "Map image prompt",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1072,
+        -240
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "38aec976-a32c-4b0e-85f4-c90adc16abc9",
+              "name": "text",
+              "type": "string",
+              "value": "={{ $('WhatsApp Trigger').item.json.messages[0].text.body }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "99c019ae-f960-4f87-a4cc-5077deaf09b2",
+      "name": "Map text prompt",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        560,
+        -608
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $('WhatsApp Trigger').item.json.messages[0].audio.id }}"
+      },
+      "id": "36f60c19-bc6f-485b-9b2d-3b148aedae90",
+      "name": "Gets WhatsApp Voicemail Source URL",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        560,
+        -432
+      ],
+      "webhookId": "bbe62f3d-8788-49d4-aae6-9e9411446d44",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "Ml0dfdFsD6aYrfii",
+          "name": "WhatsApp account 9"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $('WhatsApp Trigger').item.json.messages[0].image.id }}"
+      },
+      "id": "3a4e365c-b36d-4eb0-99d1-4fc36da8f43b",
+      "name": "Gets WhatsApp Image Source URL",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        560,
+        -240
+      ],
+      "webhookId": "c2982df4-1d8d-4669-a724-44ae17d11e6c",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "Ml0dfdFsD6aYrfii",
+          "name": "WhatsApp account 9"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "options": {}
+      },
+      "id": "dc697700-1c2c-4c7d-9aa7-6db732156cac",
+      "name": "Download Voicemail",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        736,
+        -432
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "sMbsmOFVZGBl4T0V",
+          "name": "Whatsapp live"
+        },
+        "actionNetworkApi": {
+          "id": "pwgqF87ARXhKsquN",
+          "name": "Action Network account"
+        },
+        "httpBearerAuth": {
+          "id": "6RYDBInoEvy2iIVg",
+          "name": "Bearer Auth account"
+        },
+        "httpQueryAuth": {
+          "id": "dd7vZDs2mtMdLzQR",
+          "name": "Query Auth account"
+        },
+        "whatsAppApi": {
+          "id": "Ml0dfdFsD6aYrfii",
+          "name": "WhatsApp account 9"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "options": {}
+      },
+      "id": "68535f29-4d7a-47a4-ae14-7692861beaf1",
+      "name": "Download Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        736,
+        -240
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "scrpL0cUC587HIGd",
+          "name": "Whatsapp"
+        },
+        "whatsAppApi": {
+          "id": "Ml0dfdFsD6aYrfii",
+          "name": "WhatsApp account 9"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "2fc5c912-629b-4cbe-b5e3-7e3f0651c628",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.TextId }}",
+                    "rightValue": "text"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "26a3d85c-0815-48ff-85ce-713129a1107c",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.TextId }}",
+                    "rightValue": "audio"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "840b95b8-6559-4fb7-b32c-651451d6d0d2",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.TextId }}",
+                    "rightValue": "image"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Image"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "3e7a07f9-b785-450c-8c68-f6b276838503",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.TextId }}",
+                    "rightValue": "document"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Document"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e037070a-ebfb-46e2-bb9e-962dbb12aad4",
+      "name": "Route Types",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        240,
+        -448
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "id": "f5963b44-f137-4fb1-a229-1c79b8e86cb7",
+      "name": "Transcribe a recording",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        912,
+        -432
+      ],
+      "typeVersion": 1.8,
+      "credentials": {
+        "openAiApi": {
+          "id": "b4xhpgmnb8beaDUq",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1568,
+        0
+      ],
+      "id": "7bf0ad4c-bfb6-4037-ae41-8b5b967c8c76",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "NArCWPLkKcAzZdlH",
+          "name": "OpenAi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Edit Fields').item.json.SessionId }}",
+        "contextWindowLength": 12
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1744,
+        0
+      ],
+      "id": "654650a6-9f40-44ed-a9ad-5515978f36e3",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "626e1691-deda-42ca-a1d4-143de77d5100",
+              "name": "SessionId",
+              "value": "={{ $json.contacts[0].wa_id }}",
+              "type": "string"
+            },
+            {
+              "id": "49470942-020e-4c5f-ad02-cefff4a8311e",
+              "name": "MessageId",
+              "value": "={{ $json.messages[0].id }}",
+              "type": "string"
+            },
+            {
+              "id": "5399cb03-2d0a-452c-a3f8-0f5b8c8ee94c",
+              "name": "CorrelationId",
+              "value": "={{ $json.messages[0].id }} + {{ $json.messages[0].timestamp }}",
+              "type": "string"
+            },
+            {
+              "id": "a4f63267-3084-48a3-b8a4-1f6adc483182",
+              "name": "TextId",
+              "value": "={{ $json.messages[0].type }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        32,
+        -416
+      ],
+      "id": "7ce20be9-1893-493a-b9f5-f90888be3101",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "description": "=Before sending the closing message to the client, you must call the Think tool to validate that all steps have been executed correctly.\n\nThe Think tool must check:\nLead Creation\nNotion task created successfully with Lead ID.\nAirtable record created successfully with Lead ID.\nGmail notification sent successfully (management + agent CC).\n\nAssignment\nAssigned agent is active and valid (from Agent Shift table).\nIf no agent active → Assign to = “Unassigned” is allowed.\n\nChat History\nChat history stored in Airtable (Phone, Date, Transcript, Correlation ID).\n\nClosing Message Safety\nThe final message for the client must be polite, short, and only include:\nConfirmation text\n\nLead ID\nAssurance that the team will contact them\n\nForbidden in client message: Notion, Airtable, Gmail, task details, pageId, recordId, internal logs, emails, or system terms."
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        3392,
+        304
+      ],
+      "id": "d508f88c-9409-4847-9cb2-65a58bd86fa3",
+      "name": "Think",
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "operation": "getTimeBetweenDates",
+        "startDate": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start_Date', ``, 'string') }}",
+        "endDate": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End_Date', ``, 'string') }}",
+        "units": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Units', ``, 'string') }}",
+        "outputFieldName": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Output_Field_Name', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTimeTool",
+      "typeVersion": 2,
+      "position": [
+        2544,
+        304
+      ],
+      "id": "5dcf22aa-29ea-4c3c-96bc-cd5dfd254df8",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "=Tool: Search records in Airtable\n\nPurpose: Check if a lead already exists before creating a new task.\n\nLogic:\nSearch by Lead ID or Phone Number.\nIf a record is found → Update existing task (do not create new).\nIf no record is found → Create new task (in Notion + Airtable).",
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appiKVaYhyRRbyrgb",
+          "mode": "list",
+          "cachedResultName": "Leads Database",
+          "cachedResultUrl": "https://airtable.com/appiKVaYhyRRbyrgb"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblvrMLESavNmb4kN",
+          "mode": "list",
+          "cachedResultName": "Leads Records",
+          "cachedResultUrl": "https://airtable.com/appiKVaYhyRRbyrgb/tblvrMLESavNmb4kN"
+        },
+        "returnAll": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Return_All', ``, 'boolean') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        2224,
+        304
+      ],
+      "id": "409ce80d-9972-4265-8dca-38e51caaf9da",
+      "name": "Airtable – Leads",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Cu5bPNSkSDYFUCPP",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appiKVaYhyRRbyrgb",
+          "mode": "list",
+          "cachedResultName": "Leads Database",
+          "cachedResultUrl": "https://airtable.com/appiKVaYhyRRbyrgb"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblZ63gmflSTCE8qi",
+          "mode": "list",
+          "cachedResultName": "Agent Shift",
+          "cachedResultUrl": "https://airtable.com/appiKVaYhyRRbyrgb/tblZ63gmflSTCE8qi"
+        },
+        "filterByFormula": "=AND(\n  {Active}='Active',\n  WEEKDAY(SET_TIMEZONE(NOW(),'Europe/Istanbul')) != {WeekendDay},\n  IF(\n    {EndHour} < {StartHour},\n    OR(\n      HOUR(SET_TIMEZONE(NOW(),'Europe/Istanbul')) >= {StartHour},\n      HOUR(SET_TIMEZONE(NOW(),'Europe/Istanbul')) < {EndHour}\n    ),\n    AND(\n      HOUR(SET_TIMEZONE(NOW(),'Europe/Istanbul')) >= {StartHour},\n      HOUR(SET_TIMEZONE(NOW(),'Europe/Istanbul')) < {EndHour}\n    )\n  )\n)\n",
+        "returnAll": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Return_All', ``, 'boolean') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        2384,
+        304
+      ],
+      "id": "f200a2f4-c5e9-49d6-9d5d-0d2d64464a29",
+      "name": "Agent Shift table",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Cu5bPNSkSDYFUCPP",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "=Tool: Create a database page in Notion\n\nPurpose: Store new lead details in Notion task board.\n\nNote: Do not share internal task details, Airtable records, or Notion information like \"Assign To\" or other fields with the client. Only the Lead ID may be shared as a confirmation number.\n\n\nFields:\nTitle: {{ $('WhatsApp Trigger').item.json.contacts[0].profile.name }} – Short summary\nLead ID: Auto-generate by Notion\nPhone Number: {{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\nClient Name: {{ $('WhatsApp Trigger').item.json.contacts[0].profile.name }}\nTask Description: Short request summary\nPriority Level: Medium (default)\nStatus: To_Do\nType: other\nStage: new lead\nAssign To: OPS-Ahmet, OPS-Islam, or OPS-Tarek (based on shift rules)\nB2B / B2C: B2C (default, unless corporate)\nLead Score: Empty\nClosing Reason: Empty\n\nAssignment Rules:\nNo weekend assignments.\nOnly within active shift hours.\nBalance workload fairly.\nIf a task falls outside all shift times, set the assignment property to “Unassigned” and leave the “Assign to” field empty.\n",
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "1d072fbd-35d5-8024-8274-f6da64587e23",
+          "mode": "list",
+          "cachedResultName": "Client Requests",
+          "cachedResultUrl": "https://www.notion.so/1d072fbd35d580248274f6da64587e23"
+        },
+        "title": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Title', ``, 'string') }}",
+        "simple": false,
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Phone number|phone_number",
+              "phoneValue": "={{ $('Edit Fields').item.json.SessionId }}"
+            },
+            {
+              "key": "client Name|rich_text",
+              "textContent": "={{ $('WhatsApp Trigger').item.json.contacts[0].profile.name }}"
+            },
+            {
+              "key": "Task Description |rich_text",
+              "textContent": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('propertyValues2_Text', ``, 'string') }}"
+            },
+            {
+              "key": "Stage|select",
+              "selectValue": "New Lead"
+            },
+            {
+              "key": "Status|select",
+              "selectValue": "To_Do"
+            },
+            {
+              "key": "Type|select",
+              "selectValue": "other"
+            },
+            {
+              "key": "Assignment|select",
+              "selectValue": "Assigned"
+            },
+            {
+              "key": "B2B / B2C|select",
+              "selectValue": "B2C"
+            },
+            {
+              "key": "Assign to|multi_select",
+              "multiSelectValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('propertyValues8_Option_Names_or_IDs', ``, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notionTool",
+      "typeVersion": 2.2,
+      "position": [
+        2688,
+        304
+      ],
+      "id": "9ba8bc89-bbbb-43ca-82ea-60b3707d0dc9",
+      "name": "Lead Generation",
+      "credentials": {
+        "notionApi": {
+          "id": "wzAS4njTEqEi8Fbb",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "emailType": "text",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {
+          "appendAttribution": true,
+          "ccList": "=your-email@example.com"
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        2864,
+        304
+      ],
+      "id": "054f9166-2bac-49e3-b168-76106890fce6",
+      "name": "New Lead Gmail Notification",
+      "webhookId": "1c07d120-fe35-44cb-a910-6608af3b3aee",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "NSaoIBKKfCRBQOki",
+          "name": "Gmail ads n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "=Tool: Create a record in Airtable\n\nPurpose: Record new lead in Airtable for tracking.\n\nFields:\nLead ID: Auto-generated or from Notion\nLead Name: Client name / summary\nCreate Time: {{ $now }}\nAgent Assign or last_Assigned: Assigned OPS agent (if any)\nPhone Number: {{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\nTask Link: Link to Notion task",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appiKVaYhyRRbyrgb",
+          "mode": "list",
+          "cachedResultName": "Leads Database",
+          "cachedResultUrl": "https://airtable.com/appiKVaYhyRRbyrgb"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblvrMLESavNmb4kN",
+          "mode": "list",
+          "cachedResultName": "Leads Records",
+          "cachedResultUrl": "https://airtable.com/appiKVaYhyRRbyrgb/tblvrMLESavNmb4kN"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Lead Id": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Lead_Id', ``, 'string') }}",
+            "Lead Name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Lead_Name', ``, 'string') }}",
+            "Create time": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Create_time', ``, 'string') }}",
+            "Phone number": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Phone_number', ``, 'string') }}",
+            "Task link": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Task_link', ``, 'string') }}",
+            "last_Assigned": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('last_Assigned', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Lead Id",
+              "displayName": "Lead Id",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Lead Name",
+              "displayName": "Lead Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Create time",
+              "displayName": "Create time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "last_Assigned",
+              "displayName": "last_Assigned",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone number",
+              "displayName": "Phone number",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Task link",
+              "displayName": "Task link",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Chat History",
+              "displayName": "Chat History",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Shifts",
+              "displayName": "Shifts",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        3056,
+        304
+      ],
+      "id": "053e74b3-5654-4a68-aa51-088ee18d13a1",
+      "name": "Save Leads",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Cu5bPNSkSDYFUCPP",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appiKVaYhyRRbyrgb",
+          "mode": "list",
+          "cachedResultName": "Leads Database",
+          "cachedResultUrl": "https://airtable.com/appiKVaYhyRRbyrgb"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbltqZjm4rtTOgXsB",
+          "mode": "list",
+          "cachedResultName": "Chat History",
+          "cachedResultUrl": "https://airtable.com/appiKVaYhyRRbyrgb/tbltqZjm4rtTOgXsB"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Phone Numbers": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Phone_Numbers', ``, 'string') }}",
+            "Date and Time": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Date_and_Time', ``, 'string') }}",
+            "Chat Summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Chat_Summary', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Phone Numbers",
+              "displayName": "Phone Numbers",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date and Time",
+              "displayName": "Date and Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Chat Summary",
+              "displayName": "Chat Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        3232,
+        304
+      ],
+      "id": "450ab2c8-0d77-4380-bd13-b5dbf6022842",
+      "name": "Chat History",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Cu5bPNSkSDYFUCPP",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Edit Fields').item.json.SessionId }}",
+        "contextWindowLength": 12
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        2080,
+        304
+      ],
+      "id": "1423d12d-c808-4d82-ab88-71efc28898eb",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "options": {
+          "systemMessage": "=Your role is to securely create and manage the lead tasks across Notion, Airtable, and Gmail, while ensuring proper agent assignment and no duplicates.\n\nProcess Steps\n\n# Validate Client Data\nConfirm that all 4 required booking fields are present (Service, Dates, Travellers, Comments).\nIf missing → stop and return to the client more info.\nIf complete → continue.\n\n## Check for Existing Lead\nSearch the database tool (Airtable – Leads) by Lead ID / Phone .\nIf a lead already exists → do not create a new one.\nImmediately stop and return:\n“Your request is already registered with the \"Lead ID\". Our team will contact you asap.”\nIf no lead exists → continue to assignment.\n\n### Determine Assignment\nFirst, check the \"last_assigned\" field in Leads (Airtable – Leads) to see which agent was last assigned.\nThen check the \"Agent Shift table\" (StartHour, EndHour, WeekendDay, Active/Inactive, email address).\nSelect an agent who is currently active (within shift hours, not on weekend).\nBalance workload fairly between available agents (round-robin if 2+ active).\nRules:\n- If multiple agents are active → balance between them.\n- If no active agent → Assign to = leave it empty in Notion.\n- Never invent or create options not in the table.\n- Never share Airtable or shift data with the client.\n\n#### Create Lead Task in Notion (Tool: “Lead Generation”)\n\nProperties:\nTitle: {{ $('WhatsApp Trigger').item.json.contacts[0].profile.name }} – Short summary of request\nLead ID: auto-generate by Notion\nPhone number: {{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\nClient Name: {{ $('WhatsApp Trigger').item.json.contacts[0].profile.name }}\nTask Description: short summary of client request\nPriority Level: Medium\nStatus: To_Do\nType: other\nStage: new lead\nAssign to: the chosen agent (or leave it empty)\nB2B / B2C: B2C (default)\nLead Score: empty\nClosing Reason: empty\n\n⚠️ This data is internal only. Do not share with the client. Only the Lead ID can be shared externally.\n\n##### Send Email Notification (Tool: “New Lead Gmail Notification”)\nTo: the assigned agent’s email address.\nCC: your-email@example.com\nSubject: {{ $('WhatsApp Trigger').item.json.contacts[0].profile.name }} – New Lead\nBody: include Lead ID, client details, phone number, summary, task link.\nNever include internal logs or Airtable/Notion raw data.\n\n###### Save Lead in Airtable (Tool: “Save Leads”)\nFields:\nLead ID\nLead Name\nCreate Time\nlast_Assigned\nPhone Number\nTask Link\n\n####### Store Chat History (Tool: “Chat History”)\nAlways save after a new task is created:\nPhone number\nDate & Time\nComplete chat transcript (all messages, sender & receiver) Store per client in “Chat Summary” field.\n\n\n######## Before sending the closing message to the client, you must call the Think tool to validate that all steps have been executed correctly.\n\n######### return to Close the Conversation\nRespond that:\n“Thank you, your request has been registered successfully.\nYour request has been confirmed with Lead ID [LeadID].\nOur team will contact you asap to continue with your request.”\n\n\nTimestamp: {{$now}}\nDate: {{$today}}\nLocation: Istanbul, Turke"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        2144,
+        -192
+      ],
+      "id": "bdf85bf3-007f-4fe5-864d-c1c2ec551bd0",
+      "name": "Lead Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-4-20250514",
+          "cachedResultName": "Claude 4 Sonnet"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        1920,
+        304
+      ],
+      "id": "da093315-4ab1-4535-af02-4245ab4a42c2",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "196mkABrWfktdZAj",
+          "name": "Anthropic account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Map image prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map image prompt": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map text prompt": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gets WhatsApp Voicemail Source URL": {
+      "main": [
+        [
+          {
+            "node": "Download Voicemail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gets WhatsApp Image Source URL": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Voicemail": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Types": {
+      "main": [
+        [
+          {
+            "node": "Map text prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gets WhatsApp Voicemail Source URL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gets WhatsApp Image Source URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Route Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "Lead Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "ai_tool": [
+        [
+          {
+            "node": "Lead Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable – Leads": {
+      "ai_tool": [
+        [
+          {
+            "node": "Lead Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent Shift table": {
+      "ai_tool": [
+        [
+          {
+            "node": "Lead Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Generation": {
+      "ai_tool": [
+        [
+          {
+            "node": "Lead Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New Lead Gmail Notification": {
+      "ai_tool": [
+        [
+          {
+            "node": "Lead Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Leads": {
+      "ai_tool": [
+        [
+          {
+            "node": "Lead Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat History": {
+      "ai_tool": [
+        [
+          {
+            "node": "Lead Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Lead Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Lead Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Istanbul",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "ez1Q9GKnQAuMzdJb"
+  },
+  "versionId": "ab11c2af-5602-47ca-b90a-5751b0453889",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "36ce4cb29c99de94a5e255d26728a1847c22fca1098b9623c74f3eb78c5c8daa"
+  },
+  "id": "XbtRf674VBxnNGim",
+  "tags": [
+    {
+      "createdAt": "2025-09-23T09:57:42.252Z",
+      "updatedAt": "2025-09-23T09:57:42.252Z",
+      "id": "xDJKO7WFoDeeKHDH",
+      "name": "bot"
+    }
+  ]
+}
