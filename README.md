@@ -1,102 +1,104 @@
 # n8n Automation Workflows
 
-**Production-grade n8n workflows for AI automation, lead generation, and customer support.**
+**22 production-grade automation workflows for AI agents, lead generation, customer support, and business operations.**
 
-Built and operated by [@aiapocan](https://github.com/aiapocan) — these are real workflows running (or recently run) in production at [Tasaahil](https://tasaahil.com) and Tahayyul Travel & Tourism.
+These are real workflows built and operated in production — not templates or tutorials. Each one solves a specific business problem.
 
-> **Note:** Credential IDs and sensitive configuration values have been replaced with placeholders. You'll need to configure your own n8n credentials to use these workflows.
+> Credentials and environment-specific values have been replaced with placeholders. Configure your own n8n credentials to run these workflows.
+
+---
+
+## Why these workflows exist
+
+Manual business operations don't scale. These workflows automate the work that used to require humans sitting at a screen — qualifying leads, responding to customers, syncing data, generating reports — and run them 24/7 without intervention.
 
 ---
 
 ## Workflow catalog
 
-### 🤖 AI Bots & Assistants
+### 🤖 Agentic AI & Bots
 
-| File | Description |
-|---|---|
-| `Tahayyul Bot - WhatsApp nn.json` | WhatsApp customer support bot with AI responses — production version |
-| `Tahayyul Bot - WhatsApp copy.json` | WhatsApp bot variant (A/B testing copy) |
-| `Tahayyul Bot - WhatsApp old.json` | Earlier WhatsApp bot version (archived for reference) |
-| `Tahayyul Bot - Telegram.json` | Telegram version of the Tahayyul support bot |
-| `Tahayyul Bot - website.json` | Website chat integration |
-| `Tahayyul Bot - test.json` | Test/staging version of the bot |
-| `Ads whatsapp bot.json` | WhatsApp bot wired to paid ad campaigns |
-| `Build your first AI agent.json` | Starter template: LLM agent with tool use |
+| Workflow | What it does |
+|----------|-------------|
+| `Tahayyul Bot - WhatsApp nn.json` | Production WhatsApp AI support bot — receives messages, classifies intent, generates responses with LLM, sends reply |
+| `Tahayyul Bot - Telegram.json` | Same bot architecture deployed on Telegram |
+| `Tahayyul Bot - website.json` | Website chat integration version |
+| `Tahayyul Bot - WhatsApp copy.json` | A/B variant of the WhatsApp bot |
+| `Tahayyul Bot - test.json` | Staging/test environment version |
+| `Tahayyul Bot - WhatsApp old.json` | Previous version — archived for reference |
+| `Ads whatsapp bot.json` | WhatsApp bot wired to paid ad campaign leads |
+| `Build your first AI agent.json` | Clean starter: LLM agent with tool use (weather API example) |
+| `Lead Agent.json` | Autonomous agent for lead qualification and routing |
 
 ### 📈 Lead Generation
 
-| File | Description |
-|---|---|
-| `Lead Generation V2.1.json` | Current lead gen pipeline — enrichment + scoring + CRM push |
-| `Lead Generatıon V1.4 Nov.json` | Nov 2024 version of the lead generation flow |
-| `Lead Generatıon V1.3.json` | V1.3 — iterative improvement series |
+| Workflow | What it does |
+|----------|-------------|
+| `Lead Generation V2.1.json` | Current pipeline — scrape, enrich, score, push to CRM |
+| `Lead Generatıon V1.4 Nov.json` | Nov 2024 iteration |
+| `Lead Generatıon V1.3.json` | V1.3 |
 | `Lead Generatıon V1.2.json` | V1.2 |
 | `Lead Generatıon V1.1.json` | V1.1 — initial version |
-| `Generate Leads with Google Maps.json` | Scrapes Google Maps Places API and enriches leads |
-| `Lead Agent.json` | AI agent for autonomous lead qualification |
+| `Generate Leads with Google Maps.json` | Google Maps Places API → extract businesses → enrich → output |
 
-### 📋 Operations & CRM
+### 🗂️ Operations & CRM
 
-| File | Description |
-|---|---|
-| `Daily Client Handling - Master.json` | Daily ops: processes, routes, and updates CRM records |
-| `Price sheet update.json` | Automated pricing sheet sync across channels |
-| `Workflow logic.json` | Core logic abstraction reused across workflows |
+| Workflow | What it does |
+|----------|-------------|
+| `Daily Client Handling - Master.json` | Daily ops: processes incoming records, routes by status, updates CRM |
+| `Price sheet update.json` | Syncs pricing data across channels automatically |
+| `Workflow logic.json` | Shared logic layer reused across multiple workflows |
 
-### 🧠 AI / RAG
+### 🧠 RAG & Knowledge Systems
 
-| File | Description |
-|---|---|
-| `Rag_app.json` | Full RAG pipeline: document ingestion, embedding, retrieval + answer |
-| `RAG data  .json` | Data preparation workflow for the RAG system |
+| Workflow | What it does |
+|----------|-------------|
+| `Rag_app.json` | Full RAG pipeline: ingest → embed → store → retrieve → answer |
+| `RAG data  .json` | Data preparation and chunking workflow for the RAG system |
 
-### 📚 Reference / Learning
+### 📚 Reference
 
-| File | Description |
-|---|---|
-| `Expressions.json` | n8n expression syntax examples and patterns |
-| `JSON basics.json` | JSON manipulation and transformation patterns |
+| Workflow | What it does |
+|----------|-------------|
+| `Expressions.json` | n8n expression syntax patterns and examples |
+| `JSON basics.json` | JSON transformation and manipulation patterns |
 
 ---
 
 ## How to import
 
 1. Open your n8n instance
-2. Go to **Workflows** → **Import from file**
-3. Select any `.json` file from the `workflows/` folder
-4. Configure the required credentials (OpenAI, WhatsApp Business API, Google Maps, Pinecone, etc.)
-5. Update placeholder values (`YOUR_WHATSAPP_PHONE_NUMBER_ID`, etc.) with your actual config
+2. **Workflows → Import from file**
+3. Select any `.json` from the `workflows/` folder
+4. Set up required credentials (OpenAI, WhatsApp Business API, Google Maps, Pinecone, etc.)
+5. Replace placeholders (`YOUR_WHATSAPP_PHONE_NUMBER_ID`, etc.) with your config
 6. Activate and test
 
 ---
 
-## Tech stack used across these workflows
+## Stack used across these workflows
 
-- **n8n** — orchestration platform
-- **OpenAI / Anthropic** — LLM nodes for reasoning, classification, response generation
-- **WhatsApp Business API (Meta)** — inbound/outbound messaging
-- **Telegram Bot API** — messaging channel
-- **Google Maps Places API** — lead discovery
-- **SerpAPI** — search enrichment
-- **Pinecone** — vector storage for RAG
-- **Google Drive** — document source for RAG ingestion
-- **SMTP / Gmail** — notification and report delivery
+```
+Orchestration    n8n
+AI / LLMs        OpenAI GPT-4 · Anthropic Claude · LangChain nodes
+Messaging        WhatsApp Business API (Meta) · Telegram Bot API
+Lead data        Google Maps Places API · SerpAPI
+Vector store     Pinecone
+Documents        Google Drive
+Notifications    SMTP / Gmail
+```
 
 ---
 
-## What I learned
+## Design principles
 
-- **Production reliability in n8n** — error branches, retries, dead-letter queues, and monitoring hooks to keep bots running 24/7.
-- **WhatsApp Business API edge cases** — message deduplication, template compliance, rate limiting, and webhook verification.
-- **Cost-aware RAG design** — chunking strategy, embedding cache, and retrieval thresholds that reduce API spend.
-- **Iterative workflow versioning** — maintaining parallel versions (V1.1 → V2.1) while keeping production stable.
+- **Error branches on every critical node** — failures route to notification, not silent drops
+- **Idempotent design** — re-running a workflow doesn't create duplicate records
+- **Versioned iteration** — V1.1 → V2.1 shows how workflows evolve with production feedback
+- **Separation of concerns** — shared logic extracted into reusable sub-workflows
 
 ---
 
 ## License
 
-Personal/professional work. Shared for portfolio and learning purposes. All rights reserved.
-
----
-
-*Based in Istanbul. Built between 2024 and 2025 while running ops at Tahayyul Travel & Tourism and Tasaahil.*
+Professional work shared for portfolio purposes. All rights reserved.
